@@ -1,0 +1,71 @@
+﻿<!--
+    The component will bind the money property and
+    style it to look like US Currency with no cents.
+    Between the range $1 - $999,999.
+
+
+    <xenon-money-input label="Income" money="{{money}}"></xenon-money-input>
+
+    @group Xenon Elements
+    @element xenon-money-input
+    @demo demo/index.html
+-->
+
+
+
+
+
+<link rel="import" href="../polymer/polymer.html" />
+<link rel="import" href="../paper-input/paper-input.html" />
+<link rel="import" href="../iron-form-element-behavior/iron-form-element-behavior.html">
+<dom-module id="xenon-money-input">
+    <template>
+        <paper-input id="money"
+                     name="[[name]]"
+                     label="[[label]]"
+                     value="{{_money}}"
+                     maxlength="7"
+                     prevent-invalid-input
+                     allowed-pattern="[0-9\,]"
+                     required="[[required]]"
+                     placeholder="[[placeholder]]">
+            <div prefix>$</div>
+        </paper-input>
+    </template>
+    <script>
+        Polymer({
+            is: "xenon-money-input",
+            behaviors: [
+             Polymer.PaperInputBehavior,
+             Polymer.IronValidatableBehavior,
+             Polymer.IronFormElementBehavior
+            ],
+            properties: {
+                _money: { type: String, notify: true, value: "", observer: "_onMoneyChanged" },
+                money: { type: String, notify: true, value: "", observer: "_onActualMoneyChanged" },
+            },
+            _onMoneyChanged: function (val) {
+                if (!val) { this.set("money", ""); return; }
+
+                if (val == "0") val = "";
+                // remove all incoming non-numeric characters
+                val = val.toString().replace(/[^0-9]/g, "");
+
+                var end = "," + val.substr(-3);
+                var start = val.slice(0, -3);
+                val = start + end;
+                if (val.startsWith(",") || val.endsWith(",")) val = val.replace(/[^0-9]/g, "");
+                this.set("_money", val);
+                if (this.money != val.replace(/[^0-9]/g, ""))
+                    this.set("money", val.replace(/[^0-9]/g, ""));
+            },
+            _onActualMoneyChanged: function (val) {
+                if (!val) return;
+                this.set("_money", val.toString());
+            },
+            validate: function () {
+                return this.$.money.validate();
+            },
+        });
+    </script>
+</dom-module>

@@ -1,0 +1,17 @@
+﻿<link rel="import" href="../../polymer/polymer.html" />
+<link rel="import" href="../xenon-money-input.html" />
+<dom-module id="demo-master">
+    <template>
+        <xenon-money-input id="moneyInput" label="Income" money="{{money}}" required></xenon-money-input>
+        <div>The money value in the input is actually: {{money}}</div>
+    </template>
+    <script>
+		Polymer({
+		    is: "demo-master",
+		    validate: function () {
+		       return this.$.moneyInput.validate();
+		    }
+		});
+    </script>
+</dom-module>
+

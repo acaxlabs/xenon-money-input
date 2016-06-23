@@ -1,0 +1,18 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <script src="../../webcomponentsjs/webcomponents-lite.min.js"></script>
+    <link rel="import" href="demo-master.html" />
+</head>
+<body>
+        <demo-master id="demo"></demo-master>
+        <button onclick="validate()">Validate</button>
+    <script>
+        function validate() {
+            var demo = document.getElementById("demo");
+            console.log(demo.validate());
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+{
+  "name": "xenon-money-input",
+  "version": "1.0",
+  "description": "Converts a numeric input value into US currency with no cents.",
+  "authors": [
+    "ACA[X]Labs"
+  ],
+  "keywords": [
+    "web-components",
+    "polymer",
+    "currency",
+	"input",
+	"money",
+	"xenon"
+  ],
+  "main": "xenon-money-input.html",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/acaxlabs/xenon-money-input.git"
+  },
+  "license": "https://github.com/acaxlabs/xenon-money-input/blob/master/LICENSE.txt",
+  "homepage": "https://github.com/acaxlabs/xenon-money-input",
+  "ignore": [],
+    "dependencies": {
+        "polymer": "Polymer/polymer#^1.2.0",
+		"paper-input": "PolymerElements/paper-input#^1.0.15",
+		"iron-form-element-behavior": "PolymerElements/iron-form-element-behavior#^1.0.0"
+    },
+     "devDependencies": {
+  }
+}

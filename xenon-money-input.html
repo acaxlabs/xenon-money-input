@@ -1,4 +1,4 @@
-﻿<!--
+<!--
     The component will bind the money property and
     style it to look like US Currency with no cents.
     Between the range $1 - $999,999.
@@ -54,7 +54,7 @@
                 var end = "," + val.substr(-3);
                 var start = val.slice(0, -3);
                 val = start + end;
-                if (val.startsWith(",") || val.endsWith(",")) val = val.replace(/[^0-9]/g, "");
+                if (val[0] == "," || val[val.length-1] == ",") val = val.replace(/[^0-9]/g, "");
                 this.set("_money", val);
                 if (this.money != val.replace(/[^0-9]/g, ""))
                     this.set("money", val.replace(/[^0-9]/g, ""));

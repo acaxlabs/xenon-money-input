@@ -43,6 +43,7 @@
             properties: {
                 _money: { type: String, notify: true, value: "", observer: "_onMoneyChanged" },
                 money: { type: String, notify: true, value: "", observer: "_onActualMoneyChanged" },
+                decimal: { type: Boolean, notify: true, value: false, reflectToAttribute:true, observer: "_onDecimalChanged" }
             },
             _onMoneyChanged: function (val) {
                 if (!val) { this.set("money", ""); return; }
@@ -51,13 +52,24 @@
                 // remove all incoming non-numeric characters
                 val = val.toString().replace(/[^0-9]/g, "");
 
-                var end = "," + val.substr(-3);
-                var start = val.slice(0, -3);
-                val = start + end;
-                if (val[0] == "," || val[val.length-1] == ",") val = val.replace(/[^0-9]/g, "");
+                if (this.decimal) {
+                    val = this._computeWithDecimal(val);
+                }
+                else {
+                    val = this._computeWithoutDecimal(val);
+                }
+                //val =
                 this.set("_money", val);
-                if (this.money != val.replace(/[^0-9]/g, ""))
-                    this.set("money", val.replace(/[^0-9]/g, ""));
+                if (!this.decimal) {
+                    if (this.money != val.replace(/[^0-9]/g, ""))
+                        this.set("money", val.replace(/[^0-9]/g, ""));
+
+                    return;
+                }
+
+                if (this.money != val.replace(/[^0-9\.]/g, ""))
+                    this.set("money", val.replace(/[^0-9\.]/g, ""));
+                
             },
             _onActualMoneyChanged: function (val) {
                 if (!val) return;
@@ -66,6 +78,34 @@
             validate: function () {
                 return this.$.money.validate();
             },
+            _computeWithDecimal: function (val) {
+
+                var end = "." + val.substr(-2);
+                if (end[0] == "," || end[end.length - 1] == ".") end = end.replace(/[^0-9]/g, "");
+                var start = this._computeWithoutDecimal(val.slice(0, -2));
+
+                return (start + end);
+
+            },
+            _computeWithoutDecimal: function (val) {
+                var end = "," + val.substr(-3);
+                var start = val.slice(0, -3);
+                val = start + end;
+                if (val[0] == "," || val[val.length - 1] == ",") val = val.replace(/[^0-9]/g, "");
+                return val;
+            },
+            _onDecimalChanged: function (newVal, oldVal) {
+                if (!newVal) {
+                    this.$.money.maxlength = 7;
+                    this.$.money.allowedPattern = "[0-9\,]"
+                }
+                else {
+                    this.$.money.maxlength = 10;
+                    this.$.money.allowedPattern = "[0-9\,.]"
+                }
+
+                console.log("pattern - " + this.$.money.allowedPattern);
+            }
         });
     </script>
 </dom-module>

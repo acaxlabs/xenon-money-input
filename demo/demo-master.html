@@ -1,15 +1,25 @@
-﻿<link rel="import" href="../../polymer/polymer.html" />
+<link rel="import" href="../../polymer/polymer.html" />
 <link rel="import" href="../xenon-money-input.html" />
 <dom-module id="demo-master">
     <template>
         <xenon-money-input id="moneyInput" label="Income" money="{{money}}" required></xenon-money-input>
+        <xenon-money-input id="moneyDecimalInput" label="Income with decimal" money="{{moneyWithDecimal}}" decimal required></xenon-money-input>
+
         <div>The money value in the input is actually: {{money}}</div>
+        <div>The moneyWithDecimal value in the input is actually: {{moneyWithDecimal}}</div>
+
     </template>
     <script>
 		Polymer({
 		    is: "demo-master",
 		    validate: function () {
-		       return this.$.moneyInput.validate();
+		        var valid = {
+		            whole: this.$.moneyInput.validate(),
+		            decimal: this.$.moneyDecimalInput.validate()
+		        }
+		        console.log(valid);
+
+		       return (valid.whole && valid.decimal);
 		    }
 		});
     </script>

@@ -1,7 +1,7 @@
 {
   "name": "xenon-money-input",
   "version": "1.0",
-  "description": "Converts a numeric input value into US currency with no cents.",
+  "description": "Converts a numeric input value into US currency with no cents, if the decimal attribute is set it will allow cents in the input",
   "authors": [
     "ACA[X]Labs"
   ],

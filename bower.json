@@ -1,7 +1,7 @@
 {
-  "name": "xenon-money-input",
+  "name": "xenon-money-behavior",
   "version": "1.0",
-  "description": "Converts a numeric input value into US currency with no cents, if the decimal attribute is set it will allow cents in the input",
+  "description": "formats a number to USD currency",
   "authors": [
     "ACA[X]Labs"
   ],
@@ -9,23 +9,23 @@
     "web-components",
     "polymer",
     "currency",
-	"input",
-	"money",
-	"xenon"
+    "numeric",
+    "input",
+    "pattern",
+    "regex"
   ],
-  "main": "xenon-money-input.html",
+  "main": "xenon-money-behavior.html",
   "private": true,
   "repository": {
     "type": "git",
-    "url": "git://github.com/acaxlabs/xenon-money-input.git"
+    "url": "git://github.com/acaxlabs/xenon-money-behavior.git"
   },
-  "license": "https://github.com/acaxlabs/xenon-money-input/blob/master/LICENSE.txt",
-  "homepage": "https://github.com/acaxlabs/xenon-money-input",
+  "license": "https://github.com/acaxlabs/xenon-money-behavior/blob/master/LICENSE.txt",
+  "homepage": "https://github.com/acaxlabs/xenon-money-behavior",
   "ignore": [],
     "dependencies": {
-        "polymer": "Polymer/polymer#^1.2.0",
-		"paper-input": "PolymerElements/paper-input#^1.0.15",
-		"iron-form-element-behavior": "PolymerElements/iron-form-element-behavior#^1.0.0"
+      "polymer": "Polymer/polymer#^1.2.0",
+      "xenon-money-behavior" : "ACAXLabs/xenon-money-behavior"
     },
      "devDependencies": {
   }

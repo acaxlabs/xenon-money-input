@@ -1,27 +1,26 @@
 <!--
     The component will bind the money property and
-    style it to look like US Currency with no cents.
-    Between the range $1 - $999,999.
+    style it to look like US Currency.
 
-
-    <xenon-money-input label="Income" money="{{money}}"></xenon-money-input>
+        `<xenon-money-input label="Income" money="{{money}}"></xenon-money-input>`
 
     @group Xenon Elements
     @element xenon-money-input
     @demo demo/index.html
 -->
-<link rel="import" href="../polymer/polymer.html" />
-<link rel="import" href="../paper-input/paper-input.html" />
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../paper-input/paper-input.html">
 <link rel="import" href="../iron-form-element-behavior/iron-form-element-behavior.html">
+<link rel="import" href="../xenon-money-behavior/xenon-money-behavior.html">
 <dom-module id="xenon-money-input">
     <template>
         <paper-input id="money"
                      name="[[name]]"
                      label="[[label]]"
                      value="{{_money}}"
-                     maxlength="7"
+                     maxlength="8"
                      prevent-invalid-input
-                     allowed-pattern="[0-9\,]"
+                     allowed-pattern="[0-9\,.]"
                      required="[[required]]"
                      placeholder="[[placeholder]]"
                      type="tel">
@@ -34,71 +33,37 @@
             behaviors: [
              Polymer.PaperInputBehavior,
              Polymer.IronValidatableBehavior,
-             Polymer.IronFormElementBehavior
+             Polymer.IronFormElementBehavior,
+             ACAXLabs.XenonMoneyBehavior
             ],
             properties: {
-                _money: { type: String, notify: true, value: "", observer: "_onMoneyChanged" },
-                money: { type: String, notify: true, value: "", observer: "_onActualMoneyChanged" },
+                /* internal string value of money ex. $54.30 */
+                _money: { type: String, notify: true, value: "", observer: "_onInternalMoneyChange" },
+                /* external numeric value of money ex. 54.30 */
+                money: { type: Number, notify: true, value: "", observer: "_onExternalMoneyChange" },
+                /* flag indicating if we should show cents in the value */
                 decimal: { type: Boolean, notify: true, value: false, reflectToAttribute:true, observer: "_onDecimalChanged" }
             },
-            _onMoneyChanged: function (val) {
-                if (!val) { this.set("money", ""); return; }
-
-                if (val == "0") val = "";
-                // remove all incoming non-numeric characters
-                val = val.toString().replace(/[^0-9]/g, "");
-
-                if (this.decimal) {
-                    val = this._computeWithDecimal(val);
+            _onInternalMoneyChange: function (val) {
+                var decPos = val.indexOf(".");
+                // if the string has no decimal or has two digits after the decimal, reformat it
+                // in other words don't reformat 54. or 54.0 because the user is typing cents
+                if (decPos == -1 || decPos <= val.length - 3) {
+                    this._money = this.formatMoney(val, this.decimal && decPos != -1);
                 }
-                else {
-                    val = this._computeWithoutDecimal(val);
-                }
-                //val =
-                this.set("_money", val);
-                if (!this.decimal) {
-                    if (this.money != val.replace(/[^0-9]/g, ""))
-                        this.set("money", val.replace(/[^0-9]/g, ""));
-
-                    return;
-                }
-
-                if (this.money != val.replace(/[^0-9\.]/g, ""))
-                    this.set("money", val.replace(/[^0-9\.]/g, ""));
-                
+                // figure out the numeric value of the private string _money
+                var numvalue = Number(this._money.replace(/[^0-9\.]/g, ""));
+                // if the external value is different, save this to the external value
+                if (this.money != numvalue) this.money = numvalue;
             },
-            _onActualMoneyChanged: function (val) {
-                if (!val) return;
-                this.set("_money", val.toString());
+            _onExternalMoneyChange: function (val) {
+                // figure out the numeric value of the private string _money
+                var numvalue = Number(this._money.replace(/[^0-9\.]/g, ""));
+                // if the external value != the internal numeric value then reset the internal _money
+                if (val != numvalue) this._money = this.formatMoney(val, this.decimal);
             },
             validate: function () {
                 return this.$.money.validate();
-            },
-            _computeWithDecimal: function (val) {
-
-                var end = "." + val.substr(-2);
-                if (end[0] == "," || end[end.length - 1] == ".") end = end.replace(/[^0-9]/g, "");
-                var start = this._computeWithoutDecimal(val.slice(0, -2));
-
-                return (start + end);
-
-            },
-            _computeWithoutDecimal: function (val) {
-                var end = "," + val.substr(-3);
-                var start = val.slice(0, -3);
-                val = start + end;
-                if (val[0] == "," || val[val.length - 1] == ",") val = val.replace(/[^0-9]/g, "");
-                return val;
-            },
-            _onDecimalChanged: function (newVal, oldVal) {
-                if (!newVal) {
-                    this.$.money.maxlength = 7;
-                    this.$.money.allowedPattern = "[0-9\,]"
-                }
-                else {
-                    this.$.money.maxlength = 10;
-                    this.$.money.allowedPattern = "[0-9\,.]"
-                }
             }
         });
     </script>

@@ -30,7 +30,6 @@
         Polymer({
             is: "xenon-money-input",
             behaviors: [
-             Polymer.PaperInputBehavior,
              Polymer.IronValidatableBehavior,
              Polymer.IronFormElementBehavior,
              ACAXLabs.XenonMoneyBehavior
@@ -41,7 +40,7 @@
                 /* external numeric value of money ex. 54.30 */
                 money: { type: Number, notify: true, value: "", observer: "_onExternalMoneyChange" },
                 /* flag indicating if we should show cents in the value */
-                decimal: { type: Boolean, notify: true, value: false, reflectToAttribute:true, observer: "_onDecimalChanged" }
+                decimal: { type: Boolean, notify: true, value: false, reflectToAttribute:true }
             },
             _onInternalMoneyChange: function (val) {
                 var decPos = val.indexOf(".");

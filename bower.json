@@ -1,5 +1,5 @@
 {
-  "name": "xenon-money-behavior",
+  "name": "xenon-money-input",
   "version": "1.0",
   "description": "formats a number to USD currency",
   "authors": [
@@ -14,14 +14,14 @@
     "pattern",
     "regex"
   ],
-  "main": "xenon-money-behavior.html",
+  "main": "xenon-money-input.html",
   "private": true,
   "repository": {
     "type": "git",
-    "url": "git://github.com/acaxlabs/xenon-money-behavior.git"
+    "url": "git://github.com/acaxlabs/xenon-money-input.git"
   },
-  "license": "https://github.com/acaxlabs/xenon-money-behavior/blob/master/LICENSE.txt",
-  "homepage": "https://github.com/acaxlabs/xenon-money-behavior",
+  "license": "https://github.com/acaxlabs/xenon-money-input/blob/master/LICENSE.txt",
+  "homepage": "https://github.com/acaxlabs/xenon-money-input",
   "ignore": [],
     "dependencies": {
       "polymer": "Polymer/polymer#^1.2.0",

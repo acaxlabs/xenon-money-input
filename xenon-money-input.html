@@ -19,6 +19,7 @@
                      label="[[label]]"
                      value="{{_money}}"
                      maxlength="8"
+                     error-message="[[errorMessage]]"
                      prevent-invalid-input
                      allowed-pattern="[0-9\,.]"
                      required="[[required]]"
@@ -40,7 +41,11 @@
                 /* external numeric value of money ex. 54.30 */
                 money: { type: Number, notify: true, value: "", observer: "_onExternalMoneyChange" },
                 /* flag indicating if we should show cents in the value */
-                decimal: { type: Boolean, notify: true, value: false, reflectToAttribute:true }
+                decimal: { type: Boolean, notify: true, value: false, reflectToAttribute: true },
+                /* minimum decimal value for the input to be valid */
+                minValue: Number,
+                /* maximum decimal value for the input to be valid */
+                maxValue: Number
             },
             _onInternalMoneyChange: function (val) {
                 var decPos = val.indexOf(".");
@@ -61,7 +66,17 @@
                 if (val != numvalue) this._money = this.formatMoney(val, this.decimal);
             },
             validate: function () {
-                return this.$.money.validate();
+                var errors = [];
+                if (this.minValue != undefined && this._money != "" && this.money < this.minValue) errors.push("greater than $" + this.minValue);
+                if (this.maxValue != undefined && this._money != "" && this.money > this.maxValue) errors.push("less than $" + this.maxValue);
+                if (errors.length > 0)
+                {
+                    this.$.money.errorMessage = "Value must be " + errors.join(" and ");
+                    this.$.money.invalid = true;
+                    return false;
+                } else {
+                    return this.$.money.validate();
+                }
             }
         });
     </script>

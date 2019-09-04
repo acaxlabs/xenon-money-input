@@ -9,30 +9,48 @@
     @demo demo/index.html
 -->
 <link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="../paper-input/paper-input.html">
+<link rel="import" href="../paper-input/all-imports.html">
 <link rel="import" href="../iron-form-element-behavior/iron-form-element-behavior.html">
 <link rel="import" href="../xenon-money-behavior/xenon-money-behavior.html">
 <dom-module id="xenon-money-input">
     <template>
-        <paper-input id="money"
-                     name="[[name]]"
-                     label="[[label]]"
-                     value="{{_money}}"
-                     maxlength="8"
-                     error-message="[[errorMessage]]"
-                     prevent-invalid-input
-                     allowed-pattern="[0-9\,.]"
-                     required="[[required]]"
-                     placeholder="[[placeholder]]">
-            <div prefix>$&nbsp;</div>
-        </paper-input>
+        <style>
+            :host{display:block;}
+        </style>
+        <paper-input-container tabindex="-1" no-label-float="[[noLabelFloat]]" always-float-label="[[alwaysFloatLabel]]" auto-validate$="[[autoValidate]]" disabled$="[[disabled]]" invalid="[[invalid]]">
+            <label hidden$="[[!label]]" aria-hidden="true" for$="money-[[_inputId]]">[[label]]</label>
+            <div style="display:flex; align-items:center;">
+                $
+                <input is="iron-input"
+                       id$="money-[[_inputId]]"
+                       class="input-element"
+                       aria-labelledby$="[[_ariaLabelledBy]]"
+                       aria-describedby$="[[_ariaDescribedBy]]"
+                       disabled$="[[disabled]]"
+                       title$="[[title]]"
+                       bind-value="{{_money}}"
+                       invalid="{{invalid}}"
+                       name$="[[name]]"
+                       value="{{_money}}"
+                       prevent-invalid-input
+                       maxlength="8"
+                       allowed-pattern="[0-9\,.]"
+                       required$="[[required]]"
+                       placeholder="[[placeholder]]">
+            </div>
+            
+            <template is="dom-if" if="[[errorMessage]]">
+                <paper-input-error aria-live="assertive">[[errorMessage]]</paper-input-error>
+            </template>
+        </paper-input-container>
     </template>
     <script>
         Polymer({
             is: "xenon-money-input",
             behaviors: [
-             Polymer.IronValidatableBehavior,
-             Polymer.IronFormElementBehavior,
+                Polymer.PaperInputBehavior,
+                Polymer.IronValidatableBehavior,
+                Polymer.IronFormElementBehavior,
              ACAXLabs.XenonMoneyBehavior
             ],
             properties: {
@@ -41,11 +59,7 @@
                 /* external numeric value of money ex. 54.30 */
                 money: { type: Number, notify: true, value: "", observer: "_onExternalMoneyChange" },
                 /* flag indicating if we should show cents in the value */
-                decimal: { type: Boolean, notify: true, value: false, reflectToAttribute: true },
-                /* minimum decimal value for the input to be valid */
-                minValue: Number,
-                /* maximum decimal value for the input to be valid */
-                maxValue: Number
+                decimal: { type: Boolean, notify: true, value: false, reflectToAttribute:true, observer:"_onDecimalChanged" }
             },
             _onInternalMoneyChange: function (val) {
                 var decPos = val.indexOf(".");
@@ -66,17 +80,12 @@
                 if (val != numvalue) this._money = this.formatMoney(val, this.decimal);
             },
             validate: function () {
-                var errors = [];
-                if (this.minValue != undefined && this._money != "" && this.money < this.minValue) errors.push("greater than $" + this.minValue);
-                if (this.maxValue != undefined && this._money != "" && this.money > this.maxValue) errors.push("less than $" + this.maxValue);
-                if (errors.length > 0)
-                {
-                    this.$.money.errorMessage = "Value must be " + errors.join(" and ");
-                    this.$.money.invalid = true;
-                    return false;
-                } else {
-                    return this.$.money.validate();
-                }
+                return this.$$("input").validate();
+            },
+            _onDecimalChanged: function (allowDecimal) {
+                var input = this.$$("input");
+                input.maxlength = allowDecimal ? "11" : "8";
+                console.log("_onDecimalChanged", input.maxlength)
             }
         });
     </script>

@@ -16,10 +16,11 @@
     <template>
         <style>
             :host{display:block;}
+            :host([focused]) { outline: none; }
         </style>
         <paper-input-container tabindex="-1" no-label-float="[[noLabelFloat]]" always-float-label="[[alwaysFloatLabel]]" auto-validate$="[[autoValidate]]" disabled$="[[disabled]]" invalid="[[invalid]]">
-            <label hidden$="[[!label]]" aria-hidden="true" for$="money-[[_inputId]]">[[label]]</label>
-            <div style="display:flex; align-items:center;">
+            <label tabindex="-1" hidden$="[[!label]]" aria-hidden="true" for$="money-[[_inputId]]">[[label]]</label>
+            <div tabindex="-1" style="display:flex; align-items:center;">
                 $
                 <input is="iron-input"
                        id$="money-[[_inputId]]"
